@@ -29,8 +29,12 @@ public class ProductDetailsController {
         productDetailsService.insert(productDetails);
         return "thành công";
     }
-    @PostMapping("/capnhat/{id}/{sl}")
-    public Respon<ProductDetails> capnhat(@PathVariable("id")Integer id, @PathVariable("sl") Integer sl){
-        return productDetailsService.capnhat(id,sl);
+    @PostMapping("/capnhat")
+    public Respon<ProductDetails> capnhat(@RequestParam("name")String name, @RequestParam("sl") Integer sl){
+        return productDetailsService.capnhat(name,sl);
+    }
+    @PostMapping("/get")
+    public Respon<ProductDetails> cap(@RequestParam("name")String name,@RequestParam("sl")int sl){
+        return productDetailsService.demo(name,sl);
     }
 }

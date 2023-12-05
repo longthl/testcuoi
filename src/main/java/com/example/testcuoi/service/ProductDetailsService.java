@@ -13,5 +13,6 @@ public interface ProductDetailsService {
     Optional<ProductDetails> getById(int productDetailId);
     void delete(int productDetailId);
     List<ProductDetails> getparent();
-    Respon<ProductDetails> capnhat(int productDetailId,int sl);
+    Respon<ProductDetails> capnhat(String productPropertyName,int sl);
+   Respon<ProductDetails> demo(String productPropertyName,int sl);
 }

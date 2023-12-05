@@ -13,8 +13,8 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class ProductDetailsServiceImpl implements ProductDetailsService {
-@Autowired
+public class  ProductDetailsServiceImpl implements ProductDetailsService {
+    @Autowired
     ProductDetailsRepsitory productDetailsRepsitory;
 
     @Override
@@ -24,7 +24,7 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
 
     @Override
     public void insert(ProductDetails productDetails) {
-      productDetailsRepsitory.save(productDetails);
+        productDetailsRepsitory.save(productDetails);
     }
 
     @Override
@@ -39,15 +39,14 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
 
     @Override
     public List<ProductDetails> getparent() {
-
         return productDetailsRepsitory.findAllProductsWithLastProperty();
     }
 
     @Override
-    public Respon<ProductDetails> capnhat(int productDetailId, int sl) {
-       ProductDetails pd= productDetailsRepsitory.findById(productDetailId).orElse(null);
-        Respon<ProductDetails> repon=new Respon<>();
-        if(pd != null) {
+    public Respon<ProductDetails> capnhat(String productPropertyName, int sl) {
+        ProductDetails pd = productDetailsRepsitory.findByProductPropertyName(productPropertyName);
+        Respon<ProductDetails> repon = new Respon<>();
+        if (pd != null) {
             if (sl >= 1) {
                 int soluonghientai = pd.getQuantity();
                 System.out.println(soluonghientai);
@@ -63,9 +62,40 @@ public class ProductDetailsServiceImpl implements ProductDetailsService {
             } else {
                 repon.setError("số lượng cập nhập phải lớn hơn 0");
             }
-        }else {
+        } else {
             repon.setError("ProductDetails không có");
         }
         return repon;
+    }
+
+    @Override
+    public Respon<ProductDetails> demo(String productPropertyName, int sl) {
+        ProductDetails pd = productDetailsRepsitory.findByProductPropertyName(productPropertyName);
+        Respon<ProductDetails> respon = new Respon<>();
+        if (pd != null) {
+            if (sl >= 1) {
+                int soluonghientai = pd.getQuantity();
+                System.out.println(soluonghientai);
+                int cn = soluonghientai - sl;
+                if (cn >= 0) {
+                    System.out.println(cn);
+                    pd.setQuantity(cn);
+                    while (pd.getParentId() != null) {
+                        pd = pd.getParentId();
+                        pd.setQuantity(pd.getQuantity() - sl);
+                    }
+                    productDetailsRepsitory.save(pd);
+                    respon.setError("Mua thành công");
+                } else {
+                    respon.setError("Sản phẩm không đủ");
+                }
+            } else {
+                respon.setError("số lượng cập nhập phải lớn hơn 0");
+            }
+        } else {
+            respon.setError("ProductDetails không có");
+        }
+
+        return respon;
     }
 }
